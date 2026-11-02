@@ -1,36 +1,64 @@
+<div align="center">
+
 # Barcode API
 
-API de cadastro e consulta de códigos de barras, desenvolvida com FastAPI, SQLAlchemy e SQLite. Recebe códigos como texto; não há leitura de câmera ou geração de códigos implementada.
+**Cadastro de produtos por código de barras**
 
-## Requisitos e instalação
+![Python](https://img.shields.io/badge/Python-20232a?style=flat-square) ![FastAPI](https://img.shields.io/badge/FastAPI-20232a?style=flat-square) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-20232a?style=flat-square) ![SQLite](https://img.shields.io/badge/SQLite-20232a?style=flat-square)
 
-Use Python 3.10 ou superior como ambiente de desenvolvimento sugerido. As dependências não possuem versões fixadas no repositório.
+[Sobre](#sobre) · [Como executar](#como-executar) · [Documentação](DOCUMENTACAO.md)
+
+</div>
+
+---
+
+## Sobre
+
+API REST para organizar registros de produtos a partir de seus códigos de barras. O projeto reúne validação de dados, persistência relacional e documentação interativa em uma estrutura compacta.
+
+## Destaques
+
+- Cadastro de código de barras e data de entrada.
+- Consulta por ID e listagem com paginação.
+- Exclusão de registros.
+- Documentação interativa das rotas pelo FastAPI.
+
+## Como executar
+
+Clone o repositório:
 
 ```sh
 git clone https://github.com/Kakykyyy/barcode-API.git
 cd barcode-API
-python -m venv .venv
 ```
 
-Ative o ambiente com `.venv\Scripts\Activate.ps1` no PowerShell ou `source .venv/bin/activate` no Linux/macOS.
+Envie a data de entrada no cadastro. A aplicação recebe o código como texto; leitura por câmera não está implementada.
 
 ```sh
+python -m venv .venv
+# Ative o ambiente virtual antes de continuar.
 python -m pip install -r requirements.txt
 python -m uvicorn app.main:app --reload
 ```
 
-A API fica em http://127.0.0.1:8000; a documentação interativa em http://127.0.0.1:8000/docs.
+Acesse [a aplicação local](http://127.0.0.1:8000/docs).
 
-## Rotas
+Para ativar o ambiente virtual, use `.venv\\Scripts\\Activate.ps1` no PowerShell ou `source .venv/bin/activate` no Linux/macOS.
 
-| Método | Caminho | Comportamento |
-|---|---|---|
-| POST | `/produtos/` | Cadastra código e data de entrada |
-| GET | `/produtos/` | Lista produtos; aceita `skip` e `limit` (padrões 0 e 10) |
-| GET | `/produtos/{product_id}` | Consulta por ID; retorna 404 quando ausente |
-| DELETE | `/produtos/{product_id}` | Exclui por ID |
+## Organização
 
-Exemplo de corpo para POST:
+```text
+app/
+├── main.py       # Aplicação e rotas
+├── models.py     # Modelo de produto
+├── schemas.py    # Contratos de entrada e saída
+├── crud.py       # Operações de persistência
+└── database.py   # Conexão SQLite
+```
+
+## Exemplo de uso
+
+Envie um `POST /produtos/` com:
 
 ```json
 {
@@ -39,34 +67,17 @@ Exemplo de corpo para POST:
 }
 ```
 
-A resposta contém `id`, `codigo_barras` e `data_entrada`. O POST usa o status padrão 200 do FastAPI.
+| Método | Rota | Ação |
+|---|---|---|
+| POST | `/produtos/` | Cadastrar |
+| GET | `/produtos/` | Listar |
+| GET | `/produtos/{product_id}` | Consultar |
+| DELETE | `/produtos/{product_id}` | Excluir |
 
-## Estrutura e dados
+## Documentação técnica
 
-- `app/main.py`: aplicação, CORS, rotas e ciclo de sessão do banco.
-- `app/database.py`: conexão SQLite e base dos modelos.
-- `app/models.py`: tabela `produtos`, com código único e data obrigatória.
-- `app/schemas.py`: contratos Pydantic.
-- `app/crud.py`: persistência e consultas.
-- `requirements.txt`: dependências.
+O [guia técnico](DOCUMENTACAO.md) reúne configuração, comportamento dos dados, limitações conhecidas e verificações manuais. As instruções foram elaboradas a partir da leitura do código; a execução dos projetos não foi validada nesta revisão.
 
-O arquivo `products.db` é criado no diretório de execução. As tabelas são criadas ao importar a aplicação. Preserve esse arquivo para manter os registros; não há migrações versionadas.
+## Autor
 
-## Limitações conhecidas
-
-- Envie `data_entrada`: o schema permite omiti-la, mas a coluna do banco não aceita valor nulo.
-- Códigos duplicados violam a restrição única. O CRUD não trata essa exceção; o retorno 400 previsto na rota não cobre esse caso.
-- DELETE informa sucesso mesmo quando o ID não existe.
-- `orm_mode` é configuração do Pydantic v1. A instalação sem versões fixadas pode trazer v2 e exigir adaptação para `from_attributes`.
-- Não há autenticação e o CORS está aberto. A configuração atual é de protótipo.
-
-## Verificação manual
-
-Cadastre um produto com data, liste os registros, consulte o ID recebido e exclua-o. A consulta posterior deve retornar 404. Não há suíte de testes no repositório.
-
-## Licença
-
-O README anterior mencionava MIT, mas não há arquivo LICENSE na árvore analisada. Confirme os termos com o autor antes de redistribuir.
-
----
-Documentação baseada na leitura da branch principal em 2 de novembro de 2026. Os procedimentos não foram executados nesta revisão documental.
+Desenvolvido por [Kayky Erick · @Kakykyyy](https://github.com/Kakykyyy).
