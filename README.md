@@ -43,7 +43,7 @@ python -m uvicorn app.main:app --reload
 
 Acesse [a aplicação local](http://127.0.0.1:8000/docs).
 
-Para ativar o ambiente virtual, use `.venv\\Scripts\\Activate.ps1` no PowerShell ou `source .venv/bin/activate` no Linux/macOS.
+Para ativar o ambiente virtual, use `.venv\Scripts\Activate.ps1` no PowerShell ou `source .venv/bin/activate` no Linux/macOS.
 
 ## Organização
 
