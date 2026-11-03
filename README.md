@@ -1,46 +1,83 @@
+<div align="center">
+
 # Barcode API
 
-## Overview
-This project is a barcode scanning API built with FastAPI. It allows users to scan barcodes, store product information in a database, and interact with the data through various API endpoints.
+**Cadastro de produtos por código de barras**
 
-## Project Structure
+![Python](https://img.shields.io/badge/Python-20232a?style=flat-square) ![FastAPI](https://img.shields.io/badge/FastAPI-20232a?style=flat-square) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-20232a?style=flat-square) ![SQLite](https://img.shields.io/badge/SQLite-20232a?style=flat-square)
+
+[Sobre](#sobre) · [Como executar](#como-executar) · [Documentação](DOCUMENTACAO.md)
+
+</div>
+
+---
+
+## Sobre
+
+API REST para organizar registros de produtos a partir de seus códigos de barras. O projeto reúne validação de dados, persistência relacional e documentação interativa em uma estrutura compacta.
+
+## Destaques
+
+- Cadastro de código de barras e data de entrada.
+- Consulta por ID e listagem com paginação.
+- Exclusão de registros.
+- Documentação interativa das rotas pelo FastAPI.
+
+## Como executar
+
+Clone o repositório:
+
+```sh
+git clone https://github.com/Kakykyyy/barcode-API.git
+cd barcode-API
 ```
-barcode-api/
-├── app/
-│   ├── main.py          # Entry point of the API application
-│   ├── models.py        # Database models
-│   ├── schemas.py       # Pydantic schemas for data validation
-│   ├── crud.py          # CRUD operations for database interaction
-│   └── database.py      # Database connection and session management
-├── requirements.txt      # Project dependencies
-└── README.md             # Project documentation
+
+Envie a data de entrada no cadastro. A aplicação recebe o código como texto; leitura por câmera não está implementada.
+
+```sh
+python -m venv .venv
+# Ative o ambiente virtual antes de continuar.
+python -m pip install -r requirements.txt
+python -m uvicorn app.main:app --reload
 ```
 
-## Setup Instructions
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd barcode-api
-   ```
+Acesse [a aplicação local](http://127.0.0.1:8000/docs).
 
-2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+Para ativar o ambiente virtual, use `.venv\Scripts\Activate.ps1` no PowerShell ou `source .venv/bin/activate` no Linux/macOS.
 
-3. Set up the database (if necessary) and configure the connection settings in `app/database.py`.
+## Organização
 
-## Usage
-To run the API, execute the following command:
+```text
+app/
+├── main.py       # Aplicação e rotas
+├── models.py     # Modelo de produto
+├── schemas.py    # Contratos de entrada e saída
+├── crud.py       # Operações de persistência
+└── database.py   # Conexão SQLite
 ```
-uvicorn app.main:app --reload
+
+## Exemplo de uso
+
+Envie um `POST /produtos/` com:
+
+```json
+{
+  "codigo_barras": "7891234567890",
+  "data_entrada": "2026-11-02T12:00:00"
+}
 ```
-This will start the FastAPI server, and you can access the API at `http://127.0.0.1:8000`.
 
-## API Endpoints
-- **POST /products**: Add a new product.
-- **GET /products/{id}**: Retrieve a product by ID.
-- **DELETE /products/{id}**: Delete a product by ID.
+| Método | Rota | Ação |
+|---|---|---|
+| POST | `/produtos/` | Cadastrar |
+| GET | `/produtos/` | Listar |
+| GET | `/produtos/{product_id}` | Consultar |
+| DELETE | `/produtos/{product_id}` | Excluir |
 
-## License
-This project is licensed under the MIT License.
+## Documentação técnica
+
+O [guia técnico](DOCUMENTACAO.md) reúne configuração, comportamento dos dados, limitações conhecidas e verificações manuais. As instruções foram elaboradas a partir da leitura do código; a execução dos projetos não foi validada nesta revisão.
+
+## Autor
+
+Desenvolvido por [Kayky Erick · @Kakykyyy](https://github.com/Kakykyyy).
