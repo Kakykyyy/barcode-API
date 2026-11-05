@@ -52,21 +52,21 @@ A resposta contém `id`, `codigo_barras` e `data_entrada`. O POST usa o status p
 
 O arquivo `products.db` é criado no diretório de execução. As tabelas são criadas ao importar a aplicação. Preserve esse arquivo para manter os registros; não há migrações versionadas.
 
-## Limitações conhecidas
+## Validação e limitações conhecidas
 
-- Envie `data_entrada`: o schema permite omiti-la, mas a coluna do banco não aceita valor nulo.
-- Códigos duplicados violam a restrição única. O CRUD não trata essa exceção; o retorno 400 previsto na rota não cobre esse caso.
+- `data_entrada` é obrigatória: ausência, nulo ou formato inválido retornam 422 antes de acessar o banco.
+- Códigos duplicados retornam 400 com `Produto já cadastrado.`; a sessão é revertida após a violação de unicidade.
 - DELETE informa sucesso mesmo quando o ID não existe.
-- `orm_mode` é configuração do Pydantic v1. A instalação sem versões fixadas pode trazer v2 e exigir adaptação para `from_attributes`.
+- A serialização de modelos utiliza `ConfigDict(from_attributes=True)` do Pydantic v2.
 - Não há autenticação e o CORS está aberto. A configuração atual é de protótipo.
 
 ## Verificação manual
 
-Cadastre um produto com data, liste os registros, consulte o ID recebido e exclua-o. A consulta posterior deve retornar 404. Não há suíte de testes no repositório.
+Cadastre um produto com data, liste os registros, consulte o ID recebido e exclua-o. A consulta posterior deve retornar 404. A suíte em `tests/test_products.py` cobre o fluxo completo e os erros de cadastro, usando banco temporário. Execute `python -m pip install -r requirements-dev.txt` e `python -m pytest -q`.
 
 ## Licença
 
 O README anterior mencionava MIT, mas não há arquivo LICENSE na árvore analisada. Confirme os termos com o autor antes de redistribuir.
 
 ---
-Documentação baseada na leitura da branch principal em 2 de novembro de 2026. Os procedimentos não foram executados nesta revisão documental.
+Documentação baseada na leitura da branch principal em 2 de novembro de 2026. A suíte de seis testes foi executada com sucesso em Python 3.12 em 5 de novembro de 2026.

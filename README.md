@@ -76,8 +76,19 @@ Envie um `POST /produtos/` com:
 
 ## Documentação técnica
 
-O [guia técnico](DOCUMENTACAO.md) reúne configuração, comportamento dos dados, limitações conhecidas e verificações manuais. As instruções foram elaboradas a partir da leitura do código; a execução dos projetos não foi validada nesta revisão.
+O [guia técnico](DOCUMENTACAO.md) reúne configuração, comportamento dos dados, limitações conhecidas e verificações manuais. Os fluxos de cadastro, consulta, listagem, exclusão, duplicidade e validação de data são cobertos por testes automatizados.
 
 ## Autor
 
 Desenvolvido por [Kayky Erick · @Kakykyyy](https://github.com/Kakykyyy).
+
+## Testes automatizados
+
+Use Python 3.12 e instale as dependências de desenvolvimento:
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
+Os testes usam SQLite temporário, sem alterar seu banco de produtos. Código duplicado retorna 400; data ausente, nula ou inválida retorna 422. A resposta de criação permanece 200. O GitHub Actions executa a suíte a cada push e pull request.
