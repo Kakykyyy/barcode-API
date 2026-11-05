@@ -1,16 +1,14 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class ProductBase(BaseModel):
     codigo_barras: str
 
 class ProductCreate(ProductBase):
-    data_entrada: Optional[datetime] = None
+    data_entrada: datetime
 
 class Product(ProductBase):
     id: int
     data_entrada: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

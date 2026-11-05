@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import IntegrityError
 
 # Create the database tables
 models.Base.metadata.create_all(bind=engine)
@@ -28,10 +29,16 @@ def get_db():
 
 @app.post("/produtos/", response_model=schemas.Product)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
-    db_product = crud.create_product(db, product)
-    if not db_product:
-        raise HTTPException(status_code=400, detail="Produto já cadastrado.")
-    return db_product
+    try:
+        return crud.create_product(db, product)
+    except IntegrityError as exc:
+        db.rollback()
+        existing = db.query(models.Product).filter(
+            models.Product.codigo_barras == product.codigo_barras
+        ).first()
+        if existing is not None:
+            raise HTTPException(status_code=400, detail="Produto já cadastrado.") from exc
+        raise
 
 @app.get("/produtos/{product_id}", response_model=schemas.Product)
 def read_product(product_id: int, db: Session = Depends(get_db)):
